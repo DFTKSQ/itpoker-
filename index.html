@@ -42,34 +42,71 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     z-index: 999;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.8s ease;
+    perspective: 600px;
   }
   #splash.hidden { opacity: 0; pointer-events: none; }
 
-  .splash-chip {
-    width: 120px; height: 120px;
+  .coin-scene {
     position: relative;
-    animation: chipSpin 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-    transform-origin: center bottom;
+    width: 140px; height: 180px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-end;
   }
 
-  @keyframes chipSpin {
-    0%   { transform: translateY(-200px) rotateX(80deg); opacity: 0; }
-    60%  { transform: translateY(0px) rotateX(-15deg); opacity: 1; }
-    75%  { transform: translateY(-30px) rotateX(10deg); }
-    88%  { transform: translateY(0px) rotateX(-5deg); }
-    100% { transform: translateY(0px) rotateX(0deg); }
+  .coin-wrapper {
+    position: absolute;
+    bottom: 24px;
+    animation: coinToss 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    transform-style: preserve-3d;
   }
 
-  .chip-svg { width: 120px; height: 120px; }
+  @keyframes coinToss {
+    0%   { transform: translateY(0px) rotateX(0deg); opacity: 1; }
+    15%  { transform: translateY(-300px) rotateX(540deg); }
+    35%  { transform: translateY(-420px) rotateX(1080deg); }
+    55%  { transform: translateY(-200px) rotateX(1440deg); }
+    68%  { transform: translateY(0px) rotateX(1800deg); }
+    75%  { transform: translateY(-55px) rotateX(1890deg); }
+    83%  { transform: translateY(0px) rotateX(1980deg); }
+    89%  { transform: translateY(-18px) rotateX(2025deg); }
+    94%  { transform: translateY(0px) rotateX(2070deg); }
+    97%  { transform: translateY(-5px) rotateX(2090deg); }
+    100% { transform: translateY(0px) rotateX(2160deg); }
+  }
+
+  .chip-svg { width: 130px; height: 130px; }
+
+  .coin-shadow {
+    width: 90px; height: 16px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: shadowAnim 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    position: absolute;
+    bottom: 0;
+  }
+
+  @keyframes shadowAnim {
+    0%   { transform: scaleX(1); opacity: 0.6; }
+    15%  { transform: scaleX(0.3); opacity: 0.15; }
+    30%  { transform: scaleX(0.15); opacity: 0.08; }
+    50%  { transform: scaleX(0.25); opacity: 0.12; }
+    65%  { transform: scaleX(1); opacity: 0.55; }
+    72%  { transform: scaleX(0.6); opacity: 0.3; }
+    80%  { transform: scaleX(1); opacity: 0.55; }
+    87%  { transform: scaleX(0.75); opacity: 0.35; }
+    93%  { transform: scaleX(1); opacity: 0.55; }
+    97%  { transform: scaleX(0.85); opacity: 0.4; }
+    100% { transform: scaleX(1); opacity: 0.5; }
+  }
 
   .splash-title {
     font-family: 'Playfair Display', serif;
     font-size: 42px;
     color: var(--gold);
-    margin-top: 20px;
+    margin-top: 24px;
     letter-spacing: 2px;
-    animation: fadeUp 0.5s 0.8s both;
+    animation: fadeUp 0.6s 1.6s both;
   }
   .splash-sub {
     color: var(--text-muted);
@@ -77,17 +114,23 @@
     margin-top: 6px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    animation: fadeUp 0.5s 1s both;
+    animation: fadeUp 0.6s 1.85s both;
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* Плавное появление меню */
+  #app {
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  #app.visible { opacity: 1; }
+
   /* MAIN */
-  #app { display: none; flex-direction: column; min-height: 100vh; }
-  #app.visible { display: flex; }
+  #app { display: flex; flex-direction: column; min-height: 100vh; }
 
   header {
     background: linear-gradient(180deg, #0a1e11 0%, var(--bg) 100%);
@@ -161,6 +204,16 @@
     border-color: var(--gold);
   }
   input::placeholder { color: rgba(245,237,216,0.3); font-size: 13px; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+  .num-wrap { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.25); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+  .num-wrap:focus-within { border-color: var(--gold); }
+  .num-wrap input { background: transparent; border: none; border-radius: 0; flex: 1; min-width: 0; }
+  .num-btn { background: transparent; border: none; border-left: 1px solid rgba(201,168,76,0.2); color: var(--gold); font-size: 18px; line-height: 1; padding: 0 11px; cursor: pointer; height: 100%; display: flex; align-items: center; justify-content: center; transition: background 0.15s; user-select: none; }
+  .num-btn:first-child { border-left: none; border-right: 1px solid rgba(201,168,76,0.2); }
+  .num-btn:hover { background: rgba(201,168,76,0.12); }
+  .num-btn:active { background: rgba(201,168,76,0.22); }
 
   /* BUTTONS */
   .btn {
@@ -392,24 +445,39 @@
 
 <!-- SPLASH -->
 <div id="splash">
-  <svg class="chip-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="60" cy="60" r="54" fill="#c0392b" stroke="#8b2317" stroke-width="2"/>
-    <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
-    <circle cx="60" cy="60" r="38" fill="#a93226" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-    <!-- edge segments -->
-    <g stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.85">
-      <line x1="60" y1="6" x2="60" y2="18"/>
-      <line x1="60" y1="102" x2="60" y2="114"/>
-      <line x1="6" y1="60" x2="18" y2="60"/>
-      <line x1="102" y1="60" x2="114" y2="60"/>
-      <line x1="17.6" y1="25.6" x2="26.6" y2="36.2"/>
-      <line x1="93.4" y1="83.8" x2="102.4" y2="94.4"/>
-      <line x1="102.4" y1="25.6" x2="93.4" y2="36.2"/>
-      <line x1="26.6" y1="83.8" x2="17.6" y2="94.4"/>
-    </g>
-    <!-- ITP text -->
-    <text x="60" y="66" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="20" fill="#f5edd8" letter-spacing="2">ITP</text>
-  </svg>
+  <div class="coin-scene">
+    <div class="coin-wrapper">
+      <svg class="chip-svg" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
+        <!-- основа фишки -->
+        <circle cx="65" cy="65" r="60" fill="#c0392b" stroke="#922b21" stroke-width="2"/>
+        <!-- внутренний круг -->
+        <circle cx="65" cy="65" r="46" fill="#a93226" stroke="#922b21" stroke-width="1.5"/>
+        <!-- ободок декоративный -->
+        <circle cx="65" cy="65" r="53" fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="1"/>
+        <!-- чёрные сегменты по краю -->
+        <g stroke="#1a1a1a" stroke-width="7" stroke-linecap="butt">
+          <line x1="65" y1="5"   x2="65" y2="22"/>
+          <line x1="65" y1="108" x2="65" y2="125"/>
+          <line x1="5"  y1="65"  x2="22" y2="65"/>
+          <line x1="108" y1="65" x2="125" y2="65"/>
+          <line x1="17"  y1="24" x2="29"  y2="37"/>
+          <line x1="101" y1="93" x2="113" y2="106"/>
+          <line x1="113" y1="24" x2="101" y2="37"/>
+          <line x1="29"  y1="93" x2="17"  y2="106"/>
+        </g>
+        <!-- белая окантовка сегментов -->
+        <g stroke="rgba(255,255,255,0.15)" stroke-width="1">
+          <line x1="65" y1="5"   x2="65" y2="22"/>
+          <line x1="65" y1="108" x2="65" y2="125"/>
+          <line x1="5"  y1="65"  x2="22" y2="65"/>
+          <line x1="108" y1="65" x2="125" y2="65"/>
+        </g>
+        <!-- текст ITP курсивом -->
+        <text x="65" y="74" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-style="italic" font-size="26" fill="#f5edd8" letter-spacing="1">itp</text>
+      </svg>
+    </div>
+    <div class="coin-shadow"></div>
+  </div>
   <div class="splash-title">ITPoker</div>
   <div class="splash-sub">Покерный калькулятор</div>
 </div>
@@ -445,11 +513,19 @@
       <div class="settings-grid">
         <div class="field-group">
           <span class="field-label">Цена одной фишки (₽)</span>
-          <input type="number" id="chipPrice" value="10" min="0.01" step="0.01" placeholder="10">
+          <div class="num-wrap">
+            <button class="num-btn" onclick="stepNum('chipPrice',-0.01)">−</button>
+            <input type="number" id="chipPrice" value="10" min="0.01" step="0.01" placeholder="10">
+            <button class="num-btn" onclick="stepNum('chipPrice',0.01)">+</button>
+          </div>
         </div>
         <div class="field-group">
           <span class="field-label">Стартовые фишки у каждого</span>
-          <input type="number" id="startChips" value="100" min="0" step="1" placeholder="100">
+          <div class="num-wrap">
+            <button class="num-btn" onclick="stepNum('startChips',-1)">−</button>
+            <input type="number" id="startChips" value="100" min="0" step="1" placeholder="100">
+            <button class="num-btn" onclick="stepNum('startChips',1)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -769,12 +845,24 @@ window.addEventListener('DOMContentLoaded', () => {
   addPlayer('', '');
 
   setTimeout(() => {
-    document.getElementById('splash').classList.add('hidden');
     document.getElementById('app').classList.add('visible');
-  }, 2200);
+  }, 2000);
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+  }, 2800);
 });
 
 document.getElementById('startChips').addEventListener('input', renderPlayers);
+
+function stepNum(id, delta) {
+  const inp = document.getElementById(id);
+  const val = parseFloat(inp.value) || 0;
+  const step = Math.abs(delta);
+  const decimals = step < 1 ? 2 : 0;
+  const newVal = Math.max(parseFloat(inp.min) || 0, val + delta);
+  inp.value = newVal.toFixed(decimals);
+  inp.dispatchEvent(new Event('input'));
+}
 </script>
 </body>
 </html>
